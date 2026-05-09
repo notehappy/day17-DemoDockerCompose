@@ -46,17 +46,18 @@ app.post('/addProduct', (req, res) => {
         res.status(201).send(`Product added with ID: ${result.rows[0].product_id}`);
       }
     }
-  );f
+  );
 });
 
 
-//GET request to get all products
+// GET request to get all products
 app.get('/getProducts', (req, res) => {
-  connection.query('SELECT * FROM Product', (err, rows) => {
+  connection.query('SELECT * FROM product', (err, rows) => {
     if (err) throw err;
     res.status(200).send(rows.rows);
   });
 });
 
-
-app.listen(3000, () => console.log('Listening on port 3000'));
+app.listen(3000, () => {
+  console.log("Backend server is running on port 3000");
+});

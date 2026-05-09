@@ -1,33 +1,7 @@
-version: '3'
 services:
-  backend:
-    build: ./backend
-    ports:
-      - '3000:3000'
-    depends_on:
-      - postgres_db
-    environment:
-      PGUSER: postgres
-      PGHOST: postgres
-      PGDATABASE: EcommerceDB
-      PGPASSWORD: password1234
-      PGPORT: 5432
-    volumes:
-      - backend_data:/app/data
-    networks:
-      - ecommerce_network
-
-  frontend:
-    build: ./frontend
-    ports:
-      - '5173:5173'
-    volumes:
-      - frontend_data:/app/data
-    networks:
-      - ecommerce_network
-
   postgres_db:
-    image: postgres:latest
+    image: postgres:16
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password1234
@@ -35,15 +9,34 @@ services:
     ports:
       - "5433:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
+      - ./product.sql:/docker-entrypoint-initdb.d/product.sql
     networks:
-      - ecommerce_network
+      - ecommerce-network
 
-networks:
-  ecommerce_network:
-    driver: bridge
+  backend:
+    build: ./backend
+    restart: always
+    depends_on:
+      - postgres_db
+    ports:
+      - "3000:3000"
+    networks:
+      - ecommerce-network
+
+  frontend:
+    build: ./frontend
+    restart: always
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+    networks:
+      - ecommerce-network
 
 volumes:
-  backend_data:
-  frontend_data:
-  postgres_data:
+  postgres-data:
+
+networks:
+  ecommerce-network:
+    driver: bridge

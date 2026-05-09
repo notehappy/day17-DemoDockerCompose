@@ -5,7 +5,7 @@ function GetProducts() {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:3000/getProducts')
+        fetch("http://203.159.30.224:3000/getProducts")
             .then(response => response.json())
             .then(data => setProducts(data))
             .catch(error => console.log(error));
